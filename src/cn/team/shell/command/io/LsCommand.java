@@ -4,6 +4,8 @@ import cn.team.shell.command.AbstractCommand;
 
 public class LsCommand extends AbstractCommand {
 
+	public LsCommand() {}
+	
 	public LsCommand(String fileName) {
 		this.executeArgs = fileName;
 	}

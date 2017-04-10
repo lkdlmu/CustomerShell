@@ -5,9 +5,9 @@ import java.io.File;
 import cn.team.shell.command.AbstractCommand;
 import cn.team.shell.command.CommonValues;
 
-public class Cdcommand extends AbstractCommand {
+public class CdCommand extends AbstractCommand {
 
-	public Cdcommand(String path) {
+	public CdCommand(String path) {
 		this.executeArgs = path;
 	}
 	

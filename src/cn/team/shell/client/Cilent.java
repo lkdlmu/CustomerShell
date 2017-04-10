@@ -1,12 +1,14 @@
 package cn.team.shell.client;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 import cn.team.shell.command.Executable;
 import cn.team.shell.command.io.CatCommand;
-import cn.team.shell.command.io.Cdcommand;
+import cn.team.shell.command.io.CdCommand;
 import cn.team.shell.command.io.PwdCommand;
 import cn.team.shell.command.IoCommands;
 import cn.team.shell.command.io.LsCommand;
@@ -29,26 +31,46 @@ public class Cilent {
 			String command = commandAndArgsMap.get("command");
 			String executeArgs = commandAndArgsMap.get("executeArgs");
 			
-			switch(command) {
-				case IoCommands.cat:
-					exec = new CatCommand(executeArgs);
-					break;
-				case IoCommands.cd:
-					exec = new Cdcommand(executeArgs);
-					break;
-				case IoCommands.ls: 
-					exec = new LsCommand(executeArgs);
-					break;
-				case IoCommands.pwd:
-					exec = new PwdCommand();
-					break;
-				default:
-					System.out.println("No such command: " + command);
-					continue;
+			if (inValidCommand(command)) {
+				System.out.println("bash: " + command + ": command not found");
+				continue;
+			}
+			String className = getClassName(command);
+			try {
+				Class<?> execClass = Class.forName(className);
+				if (executeArgs == null) {
+					exec = (Executable) execClass.newInstance();
+				} else {
+					Constructor<?> constructor = execClass.getConstructor(String.class);
+					exec = (Executable) constructor.newInstance(executeArgs);
+				}
+			} catch (ClassNotFoundException e) {
+				System.out.println("bash: " + command + ": command not found");
+				continue;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
 			exec.execute();
 		}
+	}
+
+	private static String getClassName(String command) {
+		String firstChar = command.substring(0, 1).toUpperCase();
+		command = command.replaceFirst("[a-z]", firstChar);
+		String packageName = "cn.team.shell.command.io";
+		String suffix = "Command";
+		String className = packageName + "." + command + suffix;
+		return className;
+	}
+
+	private static boolean inValidCommand(String command) {
+		if (command == null) {
+			return true;
+		}
+		command = command.trim();
+		return !(command.matches("[a-z]+"));
 	}
 
 	private static void printUserAndComputerName() {
