@@ -1,4 +1,4 @@
-package cn.team.shell.command;
+package shell.command;
 
 public interface IoCommands {
 	String ls = "ls";

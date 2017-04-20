@@ -1,7 +1,7 @@
-package cn.team.shell.command.io;
+package shell.command.io;
 
-import cn.team.shell.command.AbstractCommand;
-import cn.team.shell.command.CommonValues;
+import shell.command.AbstractCommand;
+import shell.util.CommonValues;
 
 public class PwdCommand extends AbstractCommand {
 
