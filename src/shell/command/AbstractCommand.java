@@ -1,4 +1,4 @@
-package cn.team.shell.command;
+package shell.command;
 
 public abstract class AbstractCommand implements Executable{
 	protected String commandArgs;

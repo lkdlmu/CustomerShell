@@ -1,20 +1,14 @@
-package cn.team.shell.client;
+package shell.client;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import cn.team.shell.command.Executable;
-import cn.team.shell.command.io.CatCommand;
-import cn.team.shell.command.io.CdCommand;
-import cn.team.shell.command.io.PwdCommand;
-import cn.team.shell.command.IoCommands;
-import cn.team.shell.command.io.LsCommand;
+import shell.command.Executable;
 
 
-public class Cilent {
+public class Client {
 
 	private static Scanner scanner;
 
@@ -32,7 +26,7 @@ public class Cilent {
 			String executeArgs = commandAndArgsMap.get("executeArgs");
 			
 			if (inValidCommand(command)) {
-				System.out.println("bash: " + command + ": command not found");
+				printNoSuchCommand(command);
 				continue;
 			}
 			String className = getClassName(command);
@@ -44,22 +38,25 @@ public class Cilent {
 					Constructor<?> constructor = execClass.getConstructor(String.class);
 					exec = (Executable) constructor.newInstance(executeArgs);
 				}
+				exec.execute();
 			} catch (ClassNotFoundException e) {
-				System.out.println("bash: " + command + ": command not found");
+				printNoSuchCommand(command);
 				continue;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			exec.execute();
 		}
+	}
+
+	private static void printNoSuchCommand(String command) {
+		System.out.println("bash: " + command + ": command not found");
 	}
 
 	private static String getClassName(String command) {
 		String firstChar = command.substring(0, 1).toUpperCase();
 		command = command.replaceFirst("[a-z]", firstChar);
-		String packageName = "cn.team.shell.command.io";
+		String packageName = "shell.command.io";
 		String suffix = "Command";
 		String className = packageName + "." + command + suffix;
 		return className;
@@ -88,7 +85,7 @@ public class Cilent {
 		Map<String, String> commandAndArgsMap = new HashMap<String, String>();
 		commandAndArgsMap.put("command", commandAndArgsArray[0]);
 		if (commandAndArgsArray.length > 1) {
-			commandAndArgsMap.put("executeArgs", commandAndArgsArray[1]);
+			commandAndArgsMap.put("executeArgs", commandAndArgsArray[1].trim());
 		}
 		return commandAndArgsMap;
 	}

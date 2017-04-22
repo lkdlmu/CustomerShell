@@ -1,6 +1,6 @@
-package cn.team.shell.command.io;
+package shell.command.io;
 
-import cn.team.shell.command.AbstractCommand;
+import shell.command.AbstractCommand;
 
 public class CatCommand extends AbstractCommand {
 
