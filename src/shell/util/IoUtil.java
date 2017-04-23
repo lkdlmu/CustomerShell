@@ -35,7 +35,12 @@ public class IoUtil {
 		return parentPath;
 	}
 	
-	public static String transPathFromLinuxToWin(String path) throws InvalidPathException{
+	/**
+	 * 检查是否为合法的linux目录
+	 * @param    path
+	 * @throws InvalidPathException 
+	 * */
+	public static boolean validLinuxPath(String path) {
 		String regex = "";
 		if (path.length() > 2) {
 			regex = "/[a-zA-Z]/";
@@ -45,7 +50,14 @@ public class IoUtil {
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(path);
 		if (!matcher.lookingAt()) {
-			throw new InvalidPathException(printInvalidPath(path));
+			return false;
+		}
+		return true;
+	}
+	
+	public static String transPathFromLinuxToWin(String path) throws InvalidPathException{
+		if (!validLinuxPath(path)) {
+			throw new InvalidPathException(path);
 		}
 		char diskLetter = path.charAt(1);
 		String newPath = "";
